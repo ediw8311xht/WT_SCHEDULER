@@ -13,17 +13,24 @@
 #include <Wt/Dbo/backend/Sqlite3.h>
 #include <Wt/Dbo/SqlTraits.h>
 #include <Wt/Dbo/WtSqlTraits.h> // WOW
+#include <Wt/WContainerWidget.h>
 #include <string>
 #include <vector>
 #include <map>
+#include <functional>
 #include <stdexcept>
 
+using std::invoke;
+using std::function;
 using std::vector;
 using std::string;
 using std::map;
 using namespace Wt;
-using namespace Wt::Dbo;
 
+
+/*--------------------------------------------------------------------------------------*/
+/*------------------DATABASE------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------*/
 namespace dbo = Wt::Dbo;
 enum class Role {
     Visitor = 0,
@@ -47,18 +54,6 @@ class Spot {
         }
 };
 
-// class Schedule {
-//     public:
-//         dbo::collection<Spot> times = {};
-//         template <class Action>
-//         void persist(Action& a) {
-//             for (auto i : times) {
-//                 i.persist(a);
-//             }
-//         }
-// };
-
-
 class User {
     public:
         string username;
@@ -71,21 +66,21 @@ class User {
             dbo::field( a, this->role,      "role"      );
         }
 };
-        
-
-
-
+/*--------------------------------------------------------------------------------------*/
+/*------------------CALENDAR------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------*/
 // Just testing out stuff at the moment.
 // Working from PlannerCalendar example from Wt codebase.
-
 class Cell : public WContainerWidget {
     private:
         WDate date_;
     public:
         WDate date() { return date_; }
+
         Cell() : WContainerWidget() {
             resize(100, 120);
         }
+
         void update(const WDate& date) {
             date_ = date;
             clear();
@@ -94,31 +89,70 @@ class Cell : public WContainerWidget {
             addWidget(std::move(header));
         }
 };
-
 class Calendar : public WCalendar {
     protected:
         virtual WWidget* renderCell(WWidget *widget, const WDate &date) override {
-            if (!widget) {
-                widget = new Cell;
-            }
+            if (!widget) { widget = new Cell; }
+
             Cell* g = (Cell*)widget;
             g->update(date);
             return g;
         }
 };
-
+/*--------------------------------------------------------------------------------------*/
+/*------------------APPLICATION---------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------*/
 class ScheduleApplication : public WApplication {
+    private:
+        WContainerWidget* _content;
     public:
+        map <string, void(ScheduleApplication::*)()> url_map = {
+            { "home",     &ScheduleApplication::calendar },
+            { "calendar", &ScheduleApplication::calendar },
+            { "404",      &ScheduleApplication::e404     }
+        };
         dbo::Session session;
+        WContainerWidget* content() {
+            if (_content == 0) {
+                _content = root()->addNew<Wt::WContainerWidget>();
+                _content->setId("content");
+            }
+            return _content;
+        }
+
         ScheduleApplication(const WEnvironment& env);
+
         static ScheduleApplication* scheduleApplciation() {
             return (ScheduleApplication*)WApplication::instance();
         }
+        void onInternalPathChange() {
+            content()->clear();
+            if (!url_map.contains(internalPath())) {
+                redirect("/404");
+            }
+            else {
+                renderThis(internalPath());
+            }
+        }
+        void renderThis(string s) {
+            if (url_map.contains(s)) {
+                invoke(url_map.at(s), this);
+            }
+        }
+        void calendar() {
+            root()->addWidget(std::make_unique<Calendar>());
+        }
+        void admin_page() {
+            calendar();
+        }
+        void e404() {
+        }
 };
-
-ScheduleApplication::ScheduleApplication(const WEnvironment& env)
-    : WApplication(env)
-{
+/*--------------------------------------------------------------------------------------*/
+/*------------------START-POINT---------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------*/
+ScheduleApplication::ScheduleApplication(const WEnvironment& env) : WApplication(env) {
+    _content = 0;
     auto sqlite3 = std::make_unique<dbo::backend::Sqlite3>("schedule.db");
     sqlite3->setProperty("show-queries", "true");
     session.setConnection(std::move(sqlite3));
@@ -132,17 +166,19 @@ ScheduleApplication::ScheduleApplication(const WEnvironment& env)
     } catch(...) {
         log("info") << "Using existing database";
     }
-    root()->clear();
-    root()->addWidget(std::make_unique<Calendar>());
+    // Handle urls
+    internalPathChanged().connect(this, &ScheduleApplication::onInternalPathChange);
+    // Default Page
+    renderThis("home");
 }
-
-/*----------------------------START----------------------*/
-std::unique_ptr<WApplication> createApplication(const WEnvironment& env) {
+/*--------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------*/
+std::unique_ptr<WApplication> create(const WEnvironment& env) {
     return std::make_unique<ScheduleApplication>(env);
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     std::srand(std::time(0));
-    return WRun(argc, argv, &createApplication);
+    return WRun(argc, argv, &create);
 }
