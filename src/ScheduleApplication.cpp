@@ -1,5 +1,5 @@
 #include "ScheduleApplication.h"
-#include "Spot.h"
+#include "Models.h"
 #include "Calendar.h"
 
 ScheduleApplication::ScheduleApplication(const WEnvironment &env)
@@ -10,6 +10,7 @@ ScheduleApplication::ScheduleApplication(const WEnvironment &env)
     session.setConnection(std::move(sqlite3));
 
     session.mapClass<Spot>("Spot");
+    session.mapClass<User>("User");
 
     Dbo::Transaction transaction(session);
     try {

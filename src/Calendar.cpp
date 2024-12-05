@@ -1,5 +1,7 @@
-#include "Cell.h"
 #include "Calendar.h"
+#include "Cell.h"
+
+#include <Wt/WText.h>
 
 WWidget *Calendar::renderCell(WWidget *widget, const WDate &date) {
     if (!widget) {
