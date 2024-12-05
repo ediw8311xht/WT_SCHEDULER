@@ -120,10 +120,13 @@ class ScheduleApplication : public WApplication {
     private:
         WContainerWidget* _content;
         Wt::WLogger logger;
+        void renderThis(string s) {
+            invoke(url_map.at(s), this);
+        }
     public:
         map <string, void(ScheduleApplication::*)()> url_map = {
             { "",            &ScheduleApplication::calendar },
-            { "admin",       &ScheduleApplication::admin    },
+            { "/admin",      &ScheduleApplication::admin    },
             { "calendar",    &ScheduleApplication::calendar },
             { "404",         &ScheduleApplication::e404     },
         };
@@ -143,16 +146,11 @@ class ScheduleApplication : public WApplication {
         }
         void onInternalPathChange() {
             content()->clear();
-            if ( internalPath() == "/admin" ) {
-                admin();
+            if ( url_map.contains(internalPath()) ) {
+                renderThis(internalPath());
             }
             else {
                 renderThis("404");
-            }
-        }
-        void renderThis(string s) {
-            if (url_map.contains(s)) {
-                invoke(url_map.at(s), this);
             }
         }
         void navbar() {
