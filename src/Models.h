@@ -1,8 +1,24 @@
 #pragma once
+
+#include <Wt/Auth/Login.h>
+#include <Wt/Auth/Dbo/UserDatabase.h>
+
+#include <Wt/Dbo/Session.h>
+#include <Wt/Dbo/ptr.h>
+
 #include <Wt/Dbo/Dbo.h>
+
+
 #include <Wt/WDate.h>
 #include <Wt/WTime.h>
+
 #include <string.h>
+
+using std::string;
+
+class User;
+using AuthInfo     = Wt::Auth::Dbo::AuthInfo<User>;
+using UserDatabase = Wt::Auth::Dbo::UserDatabase<AuthInfo>;
 
 // Currently only Admin role exists
 // Might add different roles in future
@@ -15,8 +31,8 @@ enum class Role {
 class User {
   public:
     // Information saved to db.
-    std::string username;
-    std::string password;
+    string username;
+    string password;
     Role role;
 
     // Allows different sql actions when calling persist.
@@ -45,3 +61,19 @@ class Spot {
         Wt::Dbo::field(a, end, "end");
     }
 };
+
+class MySession : public Wt::Dbo::Session {
+    private:
+        std::unique_ptr<UserDatabase> users_;
+        Wt::Auth::Login login_;
+    public:
+        static void configureAuth();
+
+        MySession();
+        Wt::Auth::AbstractUserDatabase& users();
+        Wt::Auth::Login& login() { return login_; }
+        static const Wt::Auth::AuthService& auth();
+        static const Wt::Auth::PasswordService& passwordAuth();
+};
+
+

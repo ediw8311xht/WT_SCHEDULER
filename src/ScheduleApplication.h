@@ -16,6 +16,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include "Models.h"
 
 using namespace Wt;
 using std::function;
@@ -35,7 +36,7 @@ class ScheduleApplication : public WApplication {
     void renderThis(string s);
 
   public:
-    Dbo::Session session;
+    MySession session_;
 
     map<string, void (ScheduleApplication::*)()> url_map = {
         {"", &ScheduleApplication::calendar},
@@ -53,6 +54,7 @@ class ScheduleApplication : public WApplication {
     void calendar();
     void admin();
     void e404();
+    void authWidget();
 };
 /*--------------------------------------------------------------------------------------*/
 /*------------------START-POINT---------------------------------------------------------*/

@@ -1,28 +1,19 @@
 #include "ScheduleApplication.h"
-#include "Models.h"
 #include "Calendar.h"
 
+#include <Wt/WApplication.h>
+#include <Wt/WContainerWidget.h>
+#include <Wt/WServer.h>
+
+#include <Wt/Auth/AuthWidget.h>
+#include <Wt/Auth/PasswordService.h>
+
 ScheduleApplication::ScheduleApplication(const WEnvironment &env)
-    : WApplication(env) {
+    : WApplication(env), session_() {
 
-    auto sqlite3 = std::make_unique<Dbo::backend::Sqlite3>("schedule.db");
-    sqlite3->setProperty("show-queries", "true");
-    session.setConnection(std::move(sqlite3));
-
-    session.mapClass<Spot>("Spot");
-    session.mapClass<User>("User");
-
-    Dbo::Transaction transaction(session);
-    try {
-        session.createTables();
-        log("info") << "Database created";
-    } catch (...) {
-        log("info") << "Using existing database";
-    }
     // Handle urls
     _content = 0;
-    internalPathChanged().connect(this,
-                                  &ScheduleApplication::onInternalPathChange);
+    internalPathChanged().connect(this, &ScheduleApplication::onInternalPathChange);
     // Default Page
     navbar();
     renderThis("");
@@ -56,7 +47,21 @@ void ScheduleApplication::calendar() {
     content()->addWidget(make_unique<Calendar>());
 }
 void ScheduleApplication::admin() {
+    if (session_.login().loggedIn()) {
+    }
+    else {
+    }
     content()->addWidget(make_unique<WText>("<h1>Not implemented</h1>"));
+}
+void ScheduleApplication::authWidget() {
+    auto authWidget = std::make_unique<Wt::Auth::AuthWidget>(MySession::auth(), session_.users(), session_.login());
+
+    authWidget->model()->addPasswordAuth(&MySession::passwordAuth());
+    authWidget->setRegistrationEnabled(true);
+
+    authWidget->processEnvironment();
+
+    root()->addWidget(std::move(authWidget));
 }
 void ScheduleApplication::e404() {
     content()->addWidget(make_unique<WText>("<h1>my404</h1>"));
