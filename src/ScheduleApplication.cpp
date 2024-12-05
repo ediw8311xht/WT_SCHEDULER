@@ -9,7 +9,7 @@
 #include <Wt/Auth/PasswordService.h>
 
 ScheduleApplication::ScheduleApplication(const WEnvironment &env)
-    : WApplication(env), session_() {
+    : WApplication(env) {
 
     // Handle urls
     _content = 0;
@@ -48,10 +48,11 @@ void ScheduleApplication::calendar() {
 }
 void ScheduleApplication::admin() {
     if (session_.login().loggedIn()) {
+        content()->addWidget(make_unique<WText>("<h1>Not implemented</h1>"));
     }
     else {
+        authWidget();
     }
-    content()->addWidget(make_unique<WText>("<h1>Not implemented</h1>"));
 }
 void ScheduleApplication::authWidget() {
     auto authWidget = std::make_unique<Wt::Auth::AuthWidget>(MySession::auth(), session_.users(), session_.login());
@@ -61,7 +62,7 @@ void ScheduleApplication::authWidget() {
 
     authWidget->processEnvironment();
 
-    root()->addWidget(std::move(authWidget));
+    content()->addWidget(std::move(authWidget));
 }
 void ScheduleApplication::e404() {
     content()->addWidget(make_unique<WText>("<h1>my404</h1>"));

@@ -14,33 +14,22 @@
 
 #include <string.h>
 
+#include <Wt/Dbo/Types.h>
+#include <Wt/WGlobal.h>
+
 using std::string;
 
 class User;
 using AuthInfo     = Wt::Auth::Dbo::AuthInfo<User>;
 using UserDatabase = Wt::Auth::Dbo::UserDatabase<AuthInfo>;
 
-// Currently only Admin role exists
-// Might add different roles in future
-enum class Role {
-    // Visitor = 0,
-    // User = 1,
-    Admin = 2,
-};
 
 class User {
   public:
-    // Information saved to db.
-    string username;
-    string password;
-    Role role;
 
     // Allows different sql actions when calling persist.
     template <class Action>
     void persist(Action &a) {
-        Wt::Dbo::field(a, this->username, "username");
-        Wt::Dbo::field(a, this->password, "password");
-        Wt::Dbo::field(a, this->role, "role");
     }
 };
 
