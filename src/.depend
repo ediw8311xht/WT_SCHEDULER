@@ -1,0 +1,6 @@
+main.o: main.cpp ScheduleApplication.h
+Models.o: Models.cpp Models.h
+Calendar.o: Calendar.cpp Calendar.h Cell.h
+Cell.o: Cell.cpp Cell.h
+ScheduleApplication.o: ScheduleApplication.cpp ScheduleApplication.h \
+ Models.h Calendar.h
