@@ -41,14 +41,12 @@ ScheduleApplication *ScheduleApplication::scheduleApplication() {
 }
 void ScheduleApplication::onInternalPathChange() {
     content()->clear();
-    map<string, int> test = {{"HI", 9}};
-    // test.contains("HI");
-    // if ( url_map.contains(internalPath()) ) {
-    //     renderThis(internalPath());
-    // }
-    // else {
-    //     renderThis("404");
-    // }
+    if ( url_map.contains(internalPath()) ) {
+        renderThis(internalPath());
+    }
+    else {
+        renderThis("404");
+    }
 }
 void ScheduleApplication::navbar() {
     auto button = root()->addWidget(make_unique<Wt::WPushButton>("Admin"));
