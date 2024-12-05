@@ -1,6 +1,0 @@
-Calendar.o: src/Calendar.cpp src/Calendar.h src/Cell.h
-Cell.o: src/Cell.cpp src/Cell.h
-main.o: src/main.cpp src/ScheduleApplication.h
-Models.o: src/Models.cpp src/Models.h
-ScheduleApplication.o: src/ScheduleApplication.cpp \
- src/ScheduleApplication.h src/Models.h src/Calendar.h
