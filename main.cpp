@@ -14,12 +14,26 @@
 #include <Wt/Dbo/SqlTraits.h>
 #include <Wt/Dbo/WtSqlTraits.h> // WOW
 #include <Wt/WContainerWidget.h>
+#include <Wt/WLink.h>
+#include <Wt/WPushButton.h>
 #include <string>
 #include <vector>
 #include <map>
 #include <functional>
 #include <stdexcept>
 
+
+/*--------------------------------------------------------------------------------------*/
+/*------------------TESTING-ONLY--------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------*/
+#include <iostream>
+using std::cout;
+using std::endl;
+/*--------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------*/
+
+using std::make_unique;
 using std::invoke;
 using std::function;
 using std::vector;
@@ -105,11 +119,13 @@ class Calendar : public WCalendar {
 class ScheduleApplication : public WApplication {
     private:
         WContainerWidget* _content;
+        Wt::WLogger logger;
     public:
         map <string, void(ScheduleApplication::*)()> url_map = {
-            { "home",     &ScheduleApplication::calendar },
-            { "calendar", &ScheduleApplication::calendar },
-            { "404",      &ScheduleApplication::e404     }
+            { "",            &ScheduleApplication::calendar },
+            { "admin",       &ScheduleApplication::admin    },
+            { "calendar",    &ScheduleApplication::calendar },
+            { "404",         &ScheduleApplication::e404     },
         };
         dbo::Session session;
         WContainerWidget* content() {
@@ -127,11 +143,11 @@ class ScheduleApplication : public WApplication {
         }
         void onInternalPathChange() {
             content()->clear();
-            if (!url_map.contains(internalPath())) {
-                redirect("/404");
+            if ( internalPath() == "/admin" ) {
+                admin();
             }
             else {
-                renderThis(internalPath());
+                renderThis("404");
             }
         }
         void renderThis(string s) {
@@ -139,20 +155,32 @@ class ScheduleApplication : public WApplication {
                 invoke(url_map.at(s), this);
             }
         }
-        void calendar() {
-            root()->addWidget(std::make_unique<Calendar>());
+        void navbar() {
+            auto button = root()->addWidget(make_unique<Wt::WPushButton>("Admin"));
+            button->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/admin"));
         }
-        void admin_page() {
-            calendar();
+        void calendar() {
+            content()->addWidget(make_unique<Calendar>());
+        }
+        void admin() {
+            content()->addWidget(make_unique<WText>("<h1>Not implemented</h1>"));
         }
         void e404() {
+            content()->addWidget(make_unique<WText>("<h1>my404</h1>"));
         }
 };
 /*--------------------------------------------------------------------------------------*/
 /*------------------START-POINT---------------------------------------------------------*/
 /*--------------------------------------------------------------------------------------*/
 ScheduleApplication::ScheduleApplication(const WEnvironment& env) : WApplication(env) {
-    _content = 0;
+
+    //---------LOGGING---------//
+    logger.addField("datetime", false);
+    logger.addField("session", false);
+    logger.addField("type", false);
+    logger.addField("message", true);
+    //-------------------------//
+
     auto sqlite3 = std::make_unique<dbo::backend::Sqlite3>("schedule.db");
     sqlite3->setProperty("show-queries", "true");
     session.setConnection(std::move(sqlite3));
@@ -167,9 +195,11 @@ ScheduleApplication::ScheduleApplication(const WEnvironment& env) : WApplication
         log("info") << "Using existing database";
     }
     // Handle urls
+    _content = 0;
     internalPathChanged().connect(this, &ScheduleApplication::onInternalPathChange);
     // Default Page
-    renderThis("home");
+    navbar();
+    renderThis("");
 }
 /*--------------------------------------------------------------------------------------*/
 /*--------------------------------------------------------------------------------------*/
