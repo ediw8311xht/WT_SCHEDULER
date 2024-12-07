@@ -1,5 +1,6 @@
 #include "ScheduleApplication.h"
 #include "Calendar.h"
+#include "MyAuthWidget.h"
 
 #include <Wt/WApplication.h>
 #include <Wt/WContainerWidget.h>
@@ -47,23 +48,20 @@ void ScheduleApplication::calendar() {
     content()->addWidget(make_unique<Calendar>());
 }
 void ScheduleApplication::admin() {
+    auto authWidget = std::make_unique<MyAuthWidget>(session_, "/login");
+    
     if (session_.login().loggedIn()) {
-        content()->addWidget(make_unique<WText>("<h1>Not implemented</h1>"));
+        adminPage();
     }
     else {
-        authWidget();
+        content()->addWidget(std::move(authWidget));
     }
-}
-void ScheduleApplication::authWidget() {
-    auto authWidget = std::make_unique<Wt::Auth::AuthWidget>(MySession::auth(), session_.users(), session_.login());
-
-    authWidget->model()->addPasswordAuth(&MySession::passwordAuth());
-    authWidget->setRegistrationEnabled(true);
-
-    authWidget->processEnvironment();
-
-    content()->addWidget(std::move(authWidget));
 }
 void ScheduleApplication::e404() {
     content()->addWidget(make_unique<WText>("<h1>my404</h1>"));
 }
+
+void ScheduleApplication::adminPage() {
+}
+
+

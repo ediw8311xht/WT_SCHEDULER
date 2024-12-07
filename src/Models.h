@@ -12,12 +12,8 @@
 #include <Wt/WDate.h>
 #include <Wt/WTime.h>
 
-#include <string.h>
-
 #include <Wt/Dbo/Types.h>
 #include <Wt/WGlobal.h>
-
-using std::string;
 
 class User;
 using AuthInfo     = Wt::Auth::Dbo::AuthInfo<User>;
@@ -60,9 +56,9 @@ class MySession : public Wt::Dbo::Session {
 
         MySession();
         Wt::Auth::AbstractUserDatabase& users();
-        Wt::Auth::Login& login() { return login_; }
-        static const Wt::Auth::AuthService& auth();
-        static const Wt::Auth::PasswordService& passwordAuth();
+        Wt::Auth::Login& login();
+        const Wt::Auth::AuthService& auth();
+        const Wt::Auth::PasswordService& passwordAuth();
 };
 
 

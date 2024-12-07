@@ -1,4 +1,11 @@
 
 *.ccls
 *.ccls-cache/
-planner/
+*.o
+*/*.o
+*.db
+.depend
+main
+
+
+

@@ -54,7 +54,7 @@ class ScheduleApplication : public WApplication {
     void calendar();
     void admin();
     void e404();
-    void authWidget();
+    void adminPage();
 };
 /*--------------------------------------------------------------------------------------*/
 /*------------------START-POINT---------------------------------------------------------*/

@@ -24,7 +24,9 @@ MySession::MySession() {
     connection->setProperty("show-queries", "true");
     setConnection(std::move(connection));
 
+    Dbo::Transaction t(*this);
     mapClass<User>("user");
+    mapClass<Spot>("spot");
     mapClass<AuthInfo>("auth_info");
     mapClass<AuthInfo::AuthIdentityType>("auth_identity");
     mapClass<AuthInfo::AuthTokenType>("auth_token");
@@ -71,3 +73,9 @@ const Wt::Auth::PasswordService& MySession::passwordAuth()
 {
   return myPasswordService;
 }
+
+Wt::Auth::Login& MySession::login() {
+    return login_;
+}
+
+
