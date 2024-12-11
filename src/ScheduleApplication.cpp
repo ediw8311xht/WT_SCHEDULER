@@ -12,11 +12,13 @@
 ScheduleApplication::ScheduleApplication(const WEnvironment &env)
     : WApplication(env) {
 
-    // Handle urls
+
+    session_.login().changed().connect(this, &ScheduleApplication::onAuthEvent);
     _content = 0;
+    // Handle urls
     internalPathChanged().connect(this, &ScheduleApplication::onInternalPathChange);
     // Default Page
-    navbar();
+    init_navbar();
     renderThis("");
 }
 void ScheduleApplication::renderThis(string s) { invoke(url_map.at(s), this); }
@@ -33,29 +35,51 @@ ScheduleApplication *ScheduleApplication::scheduleApplication() {
 }
 void ScheduleApplication::onInternalPathChange() {
     content()->clear();
-    if ( url_map.contains(internalPath()) ) {
-        renderThis(internalPath());
+    std::string p = internalPathNextPart("/");
+
+    // Just updated map instead whatever 
+    // Handle weirdness with `internalPath` changes
+    /*if (p == "/") { p = ""; }*/
+
+    std::cout << "Path: '" << p << "'" << std::endl;
+    if ( url_map.contains(p) ) {
+        renderThis(p);
     }
     else {
         renderThis("404");
     }
 }
-void ScheduleApplication::navbar() {
-    auto button = root()->addWidget(make_unique<Wt::WPushButton>("Admin"));
-    button->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/admin"));
+void ScheduleApplication::init_navbar() {
+    nav_container = root()->addWidget(make_unique<Wt::WContainerWidget>());
+    for (auto& i : nav_buttons) {
+        auto button = nav_container->addWidget(make_unique<Wt::WPushButton>(i.at(0)));
+        button->setLink(Wt::WLink(Wt::LinkType::InternalPath, i.at(1)));
+        button->setObjectName(i.at(2));
+    }
+    update_navbar();
+}
+// Show/Hide correct buttons depending on login state.
+void ScheduleApplication::update_navbar() {
+    auto logout_button = nav_container->find("nav_logout");
+    auto login_button  = nav_container->find("nav_login");
+    auto edit_button   = nav_container->find("nav_edit");
+    if (session_.login().loggedIn()) {
+        login_button->hide();
+        logout_button->show();
+        edit_button->show();
+    }
+    else {
+        login_button->hide();
+        logout_button->show();
+        edit_button->show();
+    }
 }
 void ScheduleApplication::calendar() {
     content()->addWidget(make_unique<Calendar>(&session_));
 }
-void ScheduleApplication::admin() {
+void ScheduleApplication::login_page() {
     auto authWidget = std::make_unique<MyAuthWidget>(session_, "/login");
-    
-    if (session_.login().loggedIn()) {
-        adminPage();
-    }
-    else {
-        content()->addWidget(std::move(authWidget));
-    }
+    content()->addWidget(std::move(authWidget));
 }
 void ScheduleApplication::e404() {
     content()->addWidget(make_unique<WText>("<h1>my404</h1>"));
@@ -63,6 +87,16 @@ void ScheduleApplication::e404() {
 
 void ScheduleApplication::adminPage() {
     content()->addWidget(make_unique<WText>("<h1>HI</h1>"));
+}
+void ScheduleApplication::onAuthEvent() {
+    if (session_.login().loggedIn()) {
+        adminPage();
+    }
+    else {
+        content()->clear();
+        update_navbar();
+        setInternalPath("");
+    }
 }
 
 

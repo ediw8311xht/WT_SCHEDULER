@@ -39,20 +39,31 @@ class ScheduleApplication : public WApplication {
     MySession session_;
 
     map<string, void (ScheduleApplication::*)()> url_map = {
-        {"",            &ScheduleApplication::calendar },
-        {"/admin",      &ScheduleApplication::admin    },
-        {"calendar",    &ScheduleApplication::calendar },
-        {"404",         &ScheduleApplication::e404     },
+        {"",            &ScheduleApplication::calendar   },
+        {"/",           &ScheduleApplication::calendar   },
+        {"calendar",    &ScheduleApplication::calendar   },
+
+        {"login",       &ScheduleApplication::login_page },
+        {"404",         &ScheduleApplication::e404       },
+    };
+    vector<vector<string>> nav_buttons = {
+        { "login",         "/login",  "nav_login"    },
+        { "logout",        "/logout", "nav_logout"   },
+        { "View Calendar", "/",       "nav_view"     },
+        { "Edit Calendar", "/edit",   "nav_edit"     },
     };
     WContainerWidget *content();
+    WContainerWidget *nav_container;
 
     ScheduleApplication(const WEnvironment &env);
 
     static ScheduleApplication *scheduleApplication();
+    void onAuthEvent();
     void onInternalPathChange();
-    void navbar();
+    void init_navbar();
+    void update_navbar();
     void calendar();
-    void admin();
+    void login_page();
     void e404();
     void adminPage();
 };
