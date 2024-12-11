@@ -45,7 +45,7 @@ void ScheduleApplication::navbar() {
     button->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/admin"));
 }
 void ScheduleApplication::calendar() {
-    content()->addWidget(make_unique<Calendar>());
+    content()->addWidget(make_unique<Calendar>(&session_));
 }
 void ScheduleApplication::admin() {
     auto authWidget = std::make_unique<MyAuthWidget>(session_, "/login");
@@ -62,6 +62,7 @@ void ScheduleApplication::e404() {
 }
 
 void ScheduleApplication::adminPage() {
+    content()->addWidget(make_unique<WText>("<h1>HI</h1>"));
 }
 
 

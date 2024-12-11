@@ -20,13 +20,20 @@ namespace {
 }
 
 MySession::MySession() {
+    // Creates connection to SQL database
     auto connection = std::make_unique<Dbo::backend::Sqlite3>(WApplication::instance()->appRoot() + "schedule.db");
     connection->setProperty("show-queries", "true");
     setConnection(std::move(connection));
 
+    // Creates transaction to SQL
     Dbo::Transaction t(*this);
+    // Transaction is automatically committed when it goes out of scope
+    // Might add explicit commit later, but it causes issues currently
+
+    // Maps to database
     mapClass<User>("user");
     mapClass<Spot>("spot");
+    mapClass<Day>("day");
     mapClass<AuthInfo>("auth_info");
     mapClass<AuthInfo::AuthIdentityType>("auth_identity");
     mapClass<AuthInfo::AuthTokenType>("auth_token");

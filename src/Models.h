@@ -15,7 +15,9 @@
 #include <Wt/Dbo/Types.h>
 #include <Wt/WGlobal.h>
 
+// Forward declaration to allow reference between classes
 class User;
+class Day;
 using AuthInfo     = Wt::Auth::Dbo::AuthInfo<User>;
 using UserDatabase = Wt::Auth::Dbo::UserDatabase<AuthInfo>;
 
@@ -23,7 +25,7 @@ using UserDatabase = Wt::Auth::Dbo::UserDatabase<AuthInfo>;
 class User {
   public:
 
-    // Allows different sql actions when calling persist.
+    // template Allows different sql actions when calling persist.
     template <class Action>
     void persist(Action &a) {
     }
@@ -32,21 +34,42 @@ class User {
 class Spot {
   public:
     // Information saved to db.
-    Wt::WString name;
-    Wt::WDate day;
-    Wt::WTime start;
-    Wt::WTime end;
+    // Wt::Dbo::ptr is used to reference database class
+    // Smart pointer so no need to deallocate
+    // https://webtoolkit.eu/wt/doc/reference/html/classWt_1_1Dbo_1_1ptr.html
+    Wt::Dbo::ptr<Day> day;
+    Wt::WString       name;
+    Wt::WTime         start;
+    Wt::WTime         end;
 
-    // Allows different sql actions when calling persist.
+    /*static Wt::Dbo::collection<Spot> getOnDay(Wt::WDate) {*/
+    /*}*/
+
     template <class Action>
     void persist(Action &a) {
-        Wt::Dbo::field(a, name, "name");
-        Wt::Dbo::field(a, day, "day");
-        Wt::Dbo::field(a, start, "start");
-        Wt::Dbo::field(a, end, "end");
+        Wt::Dbo::belongsTo( a , day   , "day"   );
+        Wt::Dbo::field(     a , name  , "name"  );
+        Wt::Dbo::field(     a , start , "start" );
+        Wt::Dbo::field(     a , end   , "end"   );
     }
 };
 
+typedef Wt::Dbo::collection<Wt::Dbo::ptr<Spot>> Spots;
+class Day {
+  public:
+      Wt::WDate date;
+      Wt::WTime start_time;
+      Wt::WTime end_time;
+      Spots spots;
+
+    template <class Action>
+    void persist(Action &a) {
+        Wt::Dbo::field(   a , date       , "date"             );    
+        Wt::Dbo::field(   a , start_time , "start_time"       );    
+        Wt::Dbo::field(   a , end_time   , "end_time"         );    
+        Wt::Dbo::hasMany( a , spots      , Wt::Dbo::ManyToOne , "day" );
+    }
+};
 class MySession : public Wt::Dbo::Session {
     private:
         std::unique_ptr<UserDatabase> users_;

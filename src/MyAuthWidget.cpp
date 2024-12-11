@@ -14,6 +14,6 @@ MyAuthWidget::MyAuthWidget(MySession &session, const std::string &basePath)
 
     model->addPasswordAuth(&session.passwordAuth());
     setModel(std::move(model));
-    /*setRegistrationEnabled(true);*/
+    setRegistrationEnabled(true);
 
 }

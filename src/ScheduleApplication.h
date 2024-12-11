@@ -39,10 +39,10 @@ class ScheduleApplication : public WApplication {
     MySession session_;
 
     map<string, void (ScheduleApplication::*)()> url_map = {
-        {"", &ScheduleApplication::calendar},
-        {"/admin", &ScheduleApplication::admin},
-        {"calendar", &ScheduleApplication::calendar},
-        {"404", &ScheduleApplication::e404},
+        {"",            &ScheduleApplication::calendar },
+        {"/admin",      &ScheduleApplication::admin    },
+        {"calendar",    &ScheduleApplication::calendar },
+        {"404",         &ScheduleApplication::e404     },
     };
     WContainerWidget *content();
 
