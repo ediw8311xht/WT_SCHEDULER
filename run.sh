@@ -13,8 +13,8 @@ _run_this() {
         make clean
     elif make -j8 2>log.txt ; then
         ./"${binary}"               \
-            --deploy-path /         \
             --docroot /             \
+            --deploy-path /         \
             --http-address 0.0.0.0  \
             --http-port 9090
     else
