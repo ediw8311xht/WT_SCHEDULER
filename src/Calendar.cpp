@@ -24,6 +24,6 @@ WWidget *Calendar::renderCell(WWidget *widget, const WDate &date) {
     Wt::Dbo::ptr<Day> day_spots = getDay(date);
 
     Cell *g = (Cell *)widget;
-    g->update(date, day_spots);
+    g->update(date, day_spots, session_->login().loggedIn());
     return g;
 }
