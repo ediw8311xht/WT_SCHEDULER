@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# Disabling annoying shit because i wanna glob babyyyyyyyyyyyyyyyy
-# using $pargs gotta glob unless using xargs don't feel like it iagjsdijfiasjfiasidfj
-# posix compliant waht???????
 # shellcheck disable=SC2086
 
 _check_args() {
