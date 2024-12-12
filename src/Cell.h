@@ -1,4 +1,5 @@
 #pragma once
+#include "Models.h"
 #include <Wt/WContainerWidget.h>
 #include <Wt/WDate.h>
 #include <Wt/WCalendar.h>
@@ -11,5 +12,5 @@ class Cell : public WContainerWidget {
     public:
         Cell();
         WDate date();
-        void update(const WDate& date);
+        void update(const WDate& date, Wt::Dbo::ptr<Day> days);
 };

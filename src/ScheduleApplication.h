@@ -43,8 +43,9 @@ class ScheduleApplication : public WApplication {
         {"/",           &ScheduleApplication::calendar   },
         {"calendar",    &ScheduleApplication::calendar   },
 
-        {"login",       &ScheduleApplication::login_page },
-        {"404",         &ScheduleApplication::e404       },
+        {"login",       &ScheduleApplication::login_page  },
+        {"logout",      &ScheduleApplication::logout_page },
+        {"404",         &ScheduleApplication::e404        },
     };
     vector<vector<string>> nav_buttons = {
         { "login",         "/login",  "nav_login"    },
@@ -64,6 +65,7 @@ class ScheduleApplication : public WApplication {
     void update_navbar();
     void calendar();
     void login_page();
+    void logout_page();
     void e404();
     void adminPage();
 };

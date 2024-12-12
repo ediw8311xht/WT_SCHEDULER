@@ -11,8 +11,6 @@
 
 ScheduleApplication::ScheduleApplication(const WEnvironment &env)
     : WApplication(env) {
-
-
     session_.login().changed().connect(this, &ScheduleApplication::onAuthEvent);
     _content = 0;
     // Handle urls
@@ -69,9 +67,9 @@ void ScheduleApplication::update_navbar() {
         edit_button->show();
     }
     else {
-        login_button->hide();
-        logout_button->show();
-        edit_button->show();
+        login_button->show();
+        logout_button->hide();
+        edit_button->hide();
     }
 }
 void ScheduleApplication::calendar() {
@@ -79,6 +77,10 @@ void ScheduleApplication::calendar() {
 }
 void ScheduleApplication::login_page() {
     auto authWidget = std::make_unique<MyAuthWidget>(session_, "/login");
+    content()->addWidget(std::move(authWidget));
+}
+void ScheduleApplication::logout_page() {
+    auto authWidget = std::make_unique<MyAuthWidget>(session_, "/logout");
     content()->addWidget(std::move(authWidget));
 }
 void ScheduleApplication::e404() {
@@ -89,14 +91,9 @@ void ScheduleApplication::adminPage() {
     content()->addWidget(make_unique<WText>("<h1>HI</h1>"));
 }
 void ScheduleApplication::onAuthEvent() {
-    if (session_.login().loggedIn()) {
-        adminPage();
-    }
-    else {
-        content()->clear();
-        update_navbar();
-        setInternalPath("");
-    }
+    content()->clear();
+    update_navbar();
+    setInternalPath("", true);
 }
 
 

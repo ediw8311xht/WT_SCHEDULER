@@ -10,13 +10,7 @@ using namespace Wt;
 class Calendar : public WCalendar {
     public:
         Calendar(MySession* session);
-        Wt::Dbo::ptr<Day> getDay(Wt::WDate gday) {
-            Wt::Dbo::ptr<Day> g = session_->find<Day>("where date = ?").bind(gday);
-            if (!g) {
-                Wt::Dbo::ptr<Day> g = session_->add(std::make_unique<Day>(gday, Wt::WTime(), Wt::WTime(), Spots()));
-            }
-            return g;
-        }
+        Wt::Dbo::ptr<Day> getDay(Wt::WDate gday);
     private:
         MySession* session_ = nullptr;
     protected:
