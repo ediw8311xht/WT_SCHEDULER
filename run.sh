@@ -17,7 +17,7 @@ _run_this() {
     elif _check_args '-v' "${@}" ; then
         valgrind ./"${binary}" $_pargs
     else
-        if make -j8 ; then #2>log.txt ; then
+        if make -j4 ; then #2>log.txt ; then
             ./"${binary}" $_pargs
         else
             echo "Error....."
