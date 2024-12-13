@@ -5,6 +5,7 @@ Scheduling Web Application built in C++ with WT.
 #### Requirements:
 
 Wt Installation guide located here:
+
 Linux: https://www.webtoolkit.eu/wt/doc/reference/html/InstallationUnix.html
 
 Windows: https://www.webtoolkit.eu/wt/doc/reference/html/InstallationWindows.html
