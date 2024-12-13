@@ -19,7 +19,7 @@ Simply run `run.sh` in project directory.
 
 Program will be compiled and ran automatically.
 
-**Read shell script to see other options for script.**
+*Read shell script to see other options for script.*
 
 ### Windows:
 
