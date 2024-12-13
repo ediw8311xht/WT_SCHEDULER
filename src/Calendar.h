@@ -10,8 +10,9 @@ using namespace Wt;
 class Calendar : public WCalendar {
     public:
         Calendar(MySession* session);
-        Wt::Dbo::ptr<Day> getDay(Wt::WDate gday);
+        Dbo::ptr<Day> getDay(WDate gday);
     private:
+        // Pointer to current session
         MySession* session_ = nullptr;
     protected:
         // Weird: Wt uses virtual on derived class method instead of in parent class method.

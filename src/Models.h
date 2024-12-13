@@ -54,7 +54,12 @@ class Spot {
     }
 };
 
+// A collection of poiner to appointments (Spot)
 typedef Wt::Dbo::collection<Wt::Dbo::ptr<Spot>> Spots;
+// Used to contain information regarding Date, start_time, end_time, and
+// appointments (Spot).
+// start_time and end_time correspond to min and max time for that day 
+// for appointments.
 class Day {
   public:
       Wt::WDate date;
@@ -70,6 +75,8 @@ class Day {
         Wt::Dbo::hasMany( a , spots      , Wt::Dbo::ManyToOne , "day" );
     }
 };
+
+// Session
 class MySession : public Wt::Dbo::Session {
     private:
         std::unique_ptr<UserDatabase> users_;

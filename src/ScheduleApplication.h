@@ -26,18 +26,19 @@ using std::map;
 using std::string;
 using std::vector;
 
-/*--------------------------------------------------------------------------------------*/
-/*------------------APPLICATION---------------------------------------------------------*/
-/*--------------------------------------------------------------------------------------*/
 class ScheduleApplication : public WApplication {
   private:
+    // Content container.
     WContainerWidget *_content;
+    // Navigation bar container.
+    WContainerWidget *nav_container;
     WLogger logger;
+    // Calls the function associated with string found in url_map.
     void renderThis(string s);
-
   public:
     MySession session_;
 
+    // InternalPaths and the callback to run.
     map<string, void (ScheduleApplication::*)()> url_map = {
         {"",            &ScheduleApplication::calendar   },
         {"/",           &ScheduleApplication::calendar   },
@@ -47,6 +48,8 @@ class ScheduleApplication : public WApplication {
         {"logout",      &ScheduleApplication::logout_page },
         {"404",         &ScheduleApplication::e404        },
     };
+    // Nav button Text, InternalPath to redirect to, and name
+    // Name is used for internally finding and referencing Widgets in Wt.
     vector<vector<string>> nav_buttons = {
         { "login",         "/login",  "nav_login"    },
         { "logout",        "/logout", "nav_logout"   },
@@ -54,7 +57,6 @@ class ScheduleApplication : public WApplication {
         { "Edit Calendar", "/edit",   "nav_edit"     },
     };
     WContainerWidget *content();
-    WContainerWidget *nav_container;
 
     ScheduleApplication(const WEnvironment &env);
 
@@ -69,6 +71,3 @@ class ScheduleApplication : public WApplication {
     void e404();
     void adminPage();
 };
-/*--------------------------------------------------------------------------------------*/
-/*------------------START-POINT---------------------------------------------------------*/
-/*--------------------------------------------------------------------------------------*/
