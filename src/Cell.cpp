@@ -35,7 +35,10 @@ void Cell::update(const WDate& date, Wt::Dbo::ptr<Day> day_spots, bool logged_in
     // Creates header showing the date of cell.
     // addWidget provided from the inherited class WContainerWidget.
     // returns pointer to Widget added.
-    auto header = addWidget(std::make_unique<WText>(day));
+    // Commented out show warning doesn't show.
+    // Currently not modifying header, but may modify in future.
+    // auto header = addWidget(std::make_unique<WText>(day));
+    addWidget(std::make_unique<WText>(day));
     if (logged_in) {
         add_admin_buttons();
     }
