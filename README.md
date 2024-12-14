@@ -2,7 +2,7 @@
 
 Scheduling Web Application built in C++ with WT.
 
-### Requirements:
+## Requirements:
 
 Wt Installation guide located here:
 
@@ -12,16 +12,18 @@ Windows: https://www.webtoolkit.eu/wt/doc/reference/html/InstallationWindows.htm
 
 Compiler: g++ with support for C++20
 
-### From Shell Script
+## From Shell Script
 
 If you have a `posix` compliant shell, then it's simple:
 Simply run `run.sh` in project directory.
 
 Program will be compiled and ran automatically.
 
+
+
 *Read shell script to see other options for script.*
 
-### Windows:
+## Windows:
 
 Run commands in parent directory:
 
@@ -37,3 +39,8 @@ Execute the binary:
 ./main --docroot / --deploy-path / --http-address 0.0.0.0  --http-port 9090
 ```
 
+## Accessing Web Page
+
+Once run, the web server will run on localhost, port 9090.
+
+In the web browser: 0.0.0.0:9090
