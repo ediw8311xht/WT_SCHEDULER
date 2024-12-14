@@ -41,6 +41,6 @@ Execute the binary:
 
 ## Accessing Web Page
 
-Once run, the web server will run on localhost, port 9090.
+Once run, the web server will be accesible on localhost, port 9090.
 
 In the web browser: 0.0.0.0:9090
