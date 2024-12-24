@@ -37,6 +37,11 @@ WWidget *Calendar::renderCell(WWidget *widget, const WDate &date) {
     Cell *g = (Cell *)widget;
     // Update the Cell, passing the current `Day` for cell and whether the user is logged in or not.
     // Need to Update: Should use different code for view/edit calendar
-    g->update(date, day_spots, session_->login().loggedIn());
+    bool logged_in = session_->login().loggedIn();
+    g->update(date, day_spots, logged_in);
+
+    if (logged_in && show_edit) {
+        g->add_admin_buttons();
+    }
     return g;
 }

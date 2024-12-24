@@ -40,13 +40,14 @@ class ScheduleApplication : public WApplication {
 
     // InternalPaths and the callback to run.
     map<string, void (ScheduleApplication::*)()> url_map = {
-        {"",            &ScheduleApplication::calendar   },
-        {"/",           &ScheduleApplication::calendar   },
-        {"calendar",    &ScheduleApplication::calendar   },
+        { "",            &ScheduleApplication::calendar         },
+        { "/",           &ScheduleApplication::calendar         },
+        { "calendar",    &ScheduleApplication::calendar         },
+        { "edit",        &ScheduleApplication::edit_calendar    },
 
-        {"login",       &ScheduleApplication::login_page  },
-        {"logout",      &ScheduleApplication::logout_page },
-        {"404",         &ScheduleApplication::e404        },
+        { "login",       &ScheduleApplication::login_page       },
+        { "logout",      &ScheduleApplication::logout_page      },
+        { "404",         &ScheduleApplication::e404             },
     };
     // Nav button Text, InternalPath to redirect to, and name
     // Name is used for internally finding and referencing Widgets in Wt.
@@ -66,6 +67,7 @@ class ScheduleApplication : public WApplication {
     void init_navbar();
     void update_navbar();
     void calendar();
+    void edit_calendar();
     void login_page();
     void logout_page();
     void e404();

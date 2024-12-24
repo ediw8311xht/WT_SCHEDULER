@@ -87,6 +87,11 @@ void ScheduleApplication::update_navbar() {
 void ScheduleApplication::calendar() {
     content()->addWidget(make_unique<Calendar>(&session_));
 }
+void ScheduleApplication::edit_calendar() {
+    auto g = make_unique<Calendar>(&session_);
+    g->edit_on();
+    content()->addWidget(std::move(g));
+}
 // For Login/Registration page.
 void ScheduleApplication::login_page() {
     auto authWidget = std::make_unique<MyAuthWidget>(session_, "/login");

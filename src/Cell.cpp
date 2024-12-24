@@ -24,7 +24,7 @@ void Cell::add_admin_buttons() {
 }
 
 // This updates `Cell` of Calendar.
-void Cell::update(const WDate& date, Wt::Dbo::ptr<Day> day_spots, bool logged_in) {
+void Cell::update(const WDate& date, Wt::Dbo::ptr<Day> day_spots, bool add_edit) {
     // Setting date_
     date_ = date;
     // Clear `Cell` contents
@@ -39,9 +39,9 @@ void Cell::update(const WDate& date, Wt::Dbo::ptr<Day> day_spots, bool logged_in
     // Currently not modifying header, but may modify in future.
     // auto header = addWidget(std::make_unique<WText>(day));
     addWidget(std::make_unique<WText>(day));
-    if (logged_in) {
-        add_admin_buttons();
-    }
+    // if (add_edit) {
+    //     add_admin_buttons();
+    // }
 }
 
 // Take constructor, resizing to 100,120 for now.
